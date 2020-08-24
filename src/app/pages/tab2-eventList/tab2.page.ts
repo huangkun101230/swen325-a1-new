@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
-import { Router, NavigationExtras } from "@angular/router";
+import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from "@angular/core";
+import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { formatDate } from "@angular/common";
 
 @Component({
@@ -15,6 +15,8 @@ export class Tab2Page implements OnInit {
   //can only add new event after today
   minDate = new Date().toISOString();
 
+  myCal: any;
+
   event = {
     id: "",
     title: "",
@@ -26,8 +28,11 @@ export class Tab2Page implements OnInit {
 
   constructor(
     private router: Router,
-    @Inject(LOCALE_ID) private locale: string
-  ) {}
+    @Inject(LOCALE_ID) private locale: string,
+
+  ) {
+
+  }
 
   ngOnInit() {
     this.resetEvent();
@@ -71,6 +76,7 @@ export class Tab2Page implements OnInit {
       );
     }
     this.eventSource.push(eventCopy);
+    // this.updateCalendar(this.eventSource);
     // this.myCal.loadEvents();
     this.resetEvent();
 
@@ -78,14 +84,19 @@ export class Tab2Page implements OnInit {
     this.collapseCard = true;
   }
 
-  getEvent(id){
-    return this.eventSource[id];
-  }
+  // updateCalendar(list) {
+  //   let navigationExtras: NavigationExtras = {
+  //     state: {
+  //       eventSource: list,
+  //     },
+  //   };
+  //   this.router.navigate(["tabs/tab1"], navigationExtras);
+  // }
 
   openDatilsWithState(ev) {
     let navigationExtras: NavigationExtras = {
       state: {
-        event: this.getEvent(ev)
+        event: this.eventSource[ev],
       },
     };
     this.router.navigate(["tabs/tab2/detail"], navigationExtras);

@@ -6,22 +6,6 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
   },
-  // {
-  //   path: 'event-detail',
-  //   loadChildren: () => import('./pages/event-detail/event-detail.module').then( m => m.EventDetailPageModule)
-  // },
-  // {
-  //   path: 'login',
-  //   loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
-  // },
-  // {
-  //   path: 'reset-password',
-  //   loadChildren: () => import('./pages/reset-password/reset-password.module').then( m => m.ResetPasswordPageModule)
-  // },
-  // {
-  //   path: 'signup',
-  //   loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule)
-  // }
 ];
 
 @NgModule({

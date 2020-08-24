@@ -1,5 +1,7 @@
 {
   "name": "assi-manager",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

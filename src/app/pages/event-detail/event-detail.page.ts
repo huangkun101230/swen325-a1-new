@@ -13,7 +13,6 @@ export class EventDetailPage implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if(this.router.getCurrentNavigation().extras.state){
         this.event = this.router.getCurrentNavigation().extras.state.event;
-        console.log(this.event);
       }
     });
   }
