@@ -11,16 +11,16 @@ const routes: Routes = [
     children: [
       {
         path: "tab1",
-        loadChildren: "../tab1-calendar/tab1.module#Tab1PageModule",
+        loadChildren: "../tab1/tab1.module#Tab1PageModule",
       },
       {
         path: "tab2",
-        loadChildren: "../tab2-eventList/tab2.module#Tab2PageModule",
+        loadChildren: "../tab2/tab2.module#Tab2PageModule",
         canActivate: [AuthGuard],
       },
       {
         path: "tab3",
-        loadChildren: "../tab3-profile/tab3.module#Tab3PageModule",
+        loadChildren: "../tab3/tab3.module#Tab3PageModule",
         canActivate: [AuthGuard],
       },
       {
@@ -30,16 +30,27 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: "tab2/create",
+        loadChildren:
+          "../event-create/event-create.module#EventCreatePageModule",
+      },
+      {
         path: "tab3/login",
         loadChildren: "../login/login.module#LoginPageModule",
       },
       {
         path: "tab3/reset-password",
-        loadChildren: "../reset-password/reset-password.module#ResetPasswordPageModule",
+        loadChildren:
+          "../reset-password/reset-password.module#ResetPasswordPageModule",
       },
       {
         path: "tab3/signup",
         loadChildren: "../signup/signup.module#SignupPageModule",
+      },
+      {
+        path: "tab3/profile",
+        loadChildren: "../profile/profile.module#ProfilePageModule",
+        canActivate: [AuthGuard],
       },
     ],
   },
