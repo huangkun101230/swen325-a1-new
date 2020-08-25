@@ -30,11 +30,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "tab2/create",
-        loadChildren:
-          "../event-create/event-create.module#EventCreatePageModule",
-      },
-      {
         path: "tab3/login",
         loadChildren: "../login/login.module#LoginPageModule",
       },

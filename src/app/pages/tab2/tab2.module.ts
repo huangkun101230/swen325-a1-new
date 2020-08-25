@@ -13,8 +13,9 @@ import { Tab2Page } from './tab2.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab2PageRoutingModule
+    Tab2PageRoutingModule,
   ],
-  declarations: [Tab2Page]
+  declarations: [Tab2Page],
+  exports: []
 })
 export class Tab2PageModule {}

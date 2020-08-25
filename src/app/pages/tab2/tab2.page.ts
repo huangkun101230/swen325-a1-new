@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { formatDate } from "@angular/common";
+import { EventService } from "./../../services/user/event.service";
+import { Platform } from "@ionic/angular";
 
 @Component({
   selector: "app-tab2",
@@ -8,106 +10,98 @@ import { formatDate } from "@angular/common";
   styleUrls: ["./tab2.page.scss"],
 })
 export class Tab2Page implements OnInit {
-  //switch for collapseCard (new event)
-  public collapseCard = true;
-  //events set
-  eventSource = [];
+  courseName: string = "";
+  eventName: string = "";
+  startTime = new Date().toISOString();
+  endTime = new Date().toISOString();
+  allDay: boolean = false;
+
   //can only add new event after today
   minDate = new Date().toISOString();
-
-  myCal: any;
-
-  event = {
-    id: "",
-    title: "",
-    desc: "",
-    startTime: "",
-    endTime: "",
-    allDay: false,
-  };
+  public collapseCard = true;
+  public eventList: Array<any>; //hold the list
 
   constructor(
+    private platform: Platform,
     private router: Router,
-    @Inject(LOCALE_ID) private locale: string,
-
+    private eventService: EventService, //call the services function
+    @Inject(LOCALE_ID) private locale: string
   ) {
-
+    this.platform.ready().then(() => {
+      this.updateList();
+    });
   }
 
   ngOnInit() {
-    this.resetEvent();
+    
+    this.platform.ready().then(() => {
+      this.updateList();
+    });
   }
 
-  resetEvent() {
-    this.event = {
-      id: "",
-      title: "",
-      desc: "",
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
-      allDay: false,
-    };
+  updateList() {
+    this.eventService
+      .getEventList() //get the list from service
+      .get()
+      .then((eventListSnapshot) => {
+        this.eventList = [];
+        eventListSnapshot.forEach((snap) => {
+          this.eventList.push({
+            //push every record into our eventList array
+            id: snap.id,
+            courseName: snap.data().courseName,
+            eventName: snap.data().eventName,
+            startTime: snap.data().startTime,
+            endTime: snap.data().endTime,
+            allDay: snap.data().allDay,
+          });
+          return false;
+        });
+      });
   }
 
-  //create event with format and reload source
-  addEvent() {
-    let eventCopy = {
-      id: this.event.startTime,
-      title: this.event.title,
-      desc: this.event.desc,
-      startTime: new Date(this.event.startTime),
-      endTime: new Date(this.event.endTime),
-      allDay: this.event.allDay,
-    };
-
-    if (eventCopy.allDay) {
-      let start = eventCopy.startTime;
-      let end = eventCopy.endTime;
-
-      eventCopy.startTime = new Date(
-        Date.UTC(
-          start.getUTCFullYear(),
-          start.getUTCMonth(),
-          start.getUTCDate()
-        )
-      );
-      eventCopy.endTime = new Date(
-        Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1)
-      );
+  addEvent(
+    courseName: string,
+    eventName: string,
+    startTime: string,
+    endTime: string,
+    allday: boolean
+  ): void {
+    if (
+      courseName === undefined ||
+      eventName === undefined ||
+      startTime === undefined ||
+      endTime === undefined ||
+      allday === undefined
+    ) {
+      return;
     }
-    this.eventSource.push(eventCopy);
-    // this.updateCalendar(this.eventSource);
-    // this.myCal.loadEvents();
-    this.resetEvent();
+    this.eventService
+      .addEvent(courseName, eventName, startTime, endTime, allday)
+      .then(() => {
+        this.router.navigateByUrl("");
+        this.updateList();
+        this.resetEvent();
+      });
 
     //close the "new event collapseCard"
     this.collapseCard = true;
   }
 
-  // updateCalendar(list) {
-  //   let navigationExtras: NavigationExtras = {
-  //     state: {
-  //       eventSource: list,
-  //     },
-  //   };
-  //   this.router.navigate(["tabs/tab1"], navigationExtras);
-  // }
+  resetEvent() {
+    this.courseName = "";
+    this.eventName = "";
+    this.startTime = new Date().toISOString();
+    this.endTime = new Date().toISOString();
+    this.allDay = false;
+  }
 
-  // openDatilsWithState(ev) {
-  //   let navigationExtras: NavigationExtras = {
-  //     state: {
-  //       event: this.eventSource[ev],
-  //     },
-  //   };
-  //   this.router.navigate(["tabs/tab2/detail"], navigationExtras);
-  // }
-
-  formatTime(ev) {
-    let end = formatDate(ev.endTime, "medium", this.locale);
+  formatTime(event) {
+    let end = formatDate(event.endTime, "medium", this.locale);
     return end;
   }
 
-  remove(event) {}
-
-  edit(event) {}
+  finish(event) {
+    this.eventService.removeEvent(event.id);
+  }
 }
