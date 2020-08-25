@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
       this.authService.loginUser(email, password).then( //passes them to loginUser function inside our AuthService service
         () => {
           this.loading.dismiss().then(() => { //this loading component shows it is loading
-            this.router.navigateByUrl("/tabs/tab2");
+            this.router.navigateByUrl("/tabs/tab3");
           });
         },
         (error) => {

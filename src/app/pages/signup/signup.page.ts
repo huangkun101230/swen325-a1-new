@@ -12,6 +12,7 @@ import { Router } from "@angular/router";
 export class SignupPage implements OnInit {
   public signupForm: FormGroup;
   public loading: any;
+
   constructor(
     private authService: AuthService,
     private loadingCtrl: LoadingController,
@@ -24,6 +25,14 @@ export class SignupPage implements OnInit {
       password: [
         "",
         Validators.compose([Validators.minLength(6), Validators.required]),
+      ],
+      firstName: [
+        "",
+        Validators.compose([Validators.minLength(1), Validators.required]),
+      ],
+      lastName: [
+        "",
+        Validators.compose([Validators.minLength(1), Validators.required]),
       ],
     });
   }
@@ -39,10 +48,13 @@ export class SignupPage implements OnInit {
     } else {
       const email: string = signupForm.value.email; //get email from the input filed
       const password: string = signupForm.value.password; //get pw from the input field
-      this.authService.signupUser(email, password).then(  //pass it to the AuthService
+      const firstName: string = signupForm.value.firstName; //get first name from the input field
+      const lastName: string = signupForm.value.lastName; //get last name from the input field
+      this.authService.signupUser(email, password, firstName, lastName).then(
+        //pass it to the AuthService
         () => {
           this.loading.dismiss().then(() => {
-            this.router.navigateByUrl("tabs/tab2");  //navi to the todo list tab
+            this.router.navigateByUrl("tabs/tab3"); //navi to the todo list tab
           });
         },
         (error) => {

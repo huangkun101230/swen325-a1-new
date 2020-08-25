@@ -1,9 +1,11 @@
-<ion-header> <ion-toolbar>
-  <ion-buttons slot="start">
-  <ion-back-button defaultHref="/tabs/tab3/login"></ion-back-button>
-  </ion-buttons>
-  <ion-title>signup</ion-title> </ion-toolbar>
-  </ion-header>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab3/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>signup</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content padding>
   <form [formGroup]="signupForm">
@@ -25,6 +27,26 @@
     <ion-item class="error-message"
       *ngIf="!signupForm.controls['password'].valid && signupForm.controls['password'].touched">
       <ion-label>Your password needs more than 6 characters.</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">First Name</ion-label>
+      <ion-input formControlName="firstName" type="firstName" placeholder="Your first name"
+        [class.invalid]="!signupForm.controls['firstName'].valid && signupForm.controls['firstName'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+      *ngIf="!signupForm.controls['firstName'].valid && signupForm.controls['firstName'].touched">
+      <ion-label>Please enter a valid string.</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Last Name</ion-label>
+      <ion-input formControlName="lastName" type="lastName" placeholder="Your last name"
+        [class.invalid]="!signupForm.controls['lastName'].valid && signupForm.controls['lastName'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+      *ngIf="!signupForm.controls['lastName'].valid && signupForm.controls['lastName'].touched">
+      <ion-label>Please enter a valid string.</ion-label>
     </ion-item>
     <ion-button expand="block" (click)="signupUser(signupForm)" [disabled]="!signupForm.valid">
       Create an Account

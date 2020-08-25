@@ -5,8 +5,8 @@ import { Plugins } from "@capacitor/core";
 
 const { SplashScreen, StatusBar } = Plugins;
 
-import * as firebase from 'firebase/app';
-import { firebaseConfig } from './credentials'
+import * as firebase from "firebase/app";
+import { firebaseConfig } from "./credentials";
 
 @Component({
   selector: "app-root",
@@ -22,12 +22,12 @@ export class AppComponent {
     SplashScreen.hide().catch((error) => {
       console.error(error);
     });
-    
-    firebase.initializeApp(firebaseConfig);
 
     // StatusBar.hide().catch((error) => {
     //   console.error(error);
     // });
-    this.platform.ready().then(() => {});
+    this.platform.ready().then(() => {
+      firebase.initializeApp(firebaseConfig);
+    });
   }
 }
