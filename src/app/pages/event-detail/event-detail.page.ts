@@ -36,7 +36,7 @@ export class EventDetailPage implements OnInit {
     });
   }
 
-  updateDetail(){
+  updateDetail() {
     let self = this;
     const eventId: string = this.route.snapshot.paramMap.get("id");
     this.eventService
@@ -48,9 +48,7 @@ export class EventDetailPage implements OnInit {
         this.currentEvent.startTime = this.formatTime(
           this.currentEvent.startTime
         );
-        this.currentEvent.endTime = this.formatTime(
-          this.currentEvent.endTime
-        );
+        this.currentEvent.endTime = this.formatTime(this.currentEvent.endTime);
         self.fillCardWithRawData();
       });
   }
@@ -71,11 +69,11 @@ export class EventDetailPage implements OnInit {
   modify(courseName, eventName, startTime, endTime, allDay) {
     this.eventService.modifyEvent(
       this.currentEvent.id,
-      courseName,
-      eventName,
-      startTime,
-      endTime,
-      allDay
+      this.courseName,
+      this.setFirstLetterToUppercase(this.eventName),
+      this.startTime,
+      this.endTime,
+      this.allDay
     );
     this.collapseCard = true;
     this.updateDetail();
@@ -104,5 +102,9 @@ export class EventDetailPage implements OnInit {
       ],
     });
     alert.present();
+  }
+
+  setFirstLetterToUppercase(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }

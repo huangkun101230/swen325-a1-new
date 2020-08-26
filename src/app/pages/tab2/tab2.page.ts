@@ -26,6 +26,8 @@ export class Tab2Page implements OnInit {
   public collapseCard = true;
   public eventList: Array<any>; //hold the list
 
+  someAutoFormattedInput: string;
+
   constructor(
     private platform: Platform,
     private router: Router,
@@ -100,7 +102,7 @@ export class Tab2Page implements OnInit {
     this.eventService
       .addEvent(
         courseName,
-        eventName,
+        this.setFirstLetterToUppercase(eventName),
         this.formatTime(startTime),
         this.formatTime(endTime),
         allday
@@ -131,5 +133,9 @@ export class Tab2Page implements OnInit {
   getDueTime(event) {
     let end = formatDate(event.endTime, "medium", this.locale);
     return end;
+  }
+
+  setFirstLetterToUppercase(string:string):string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }

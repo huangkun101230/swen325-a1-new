@@ -13,10 +13,10 @@
     </ion-card-header>
     <ion-card-content *ngIf="!collapseCard">
       <ion-item>
-        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName"></ion-input>
+        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName" (ngModelChange)="courseName=$event.toUpperCase()"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input type="text" placeholder="Assignment Title" [(ngModel)]="eventName"></ion-input>
+        <ion-input class="capitalize" type="text" placeholder="Assignment Title" [(ngModel)]="eventName"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Start</ion-label>
