@@ -1,7 +1,7 @@
 import { Component, OnInit, LOCALE_ID, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EventService } from "./../../services/user/event.service";
-import { Platform, AlertController } from "@ionic/angular";
+import { Platform, AlertController, ToastController } from "@ionic/angular";
 import { formatDate } from "@angular/common";
 
 @Component({
@@ -27,6 +27,7 @@ export class EventDetailPage implements OnInit {
     private platform: Platform,
     private router: Router,
     private alertCtrl: AlertController,
+    public toastController: ToastController,
     @Inject(LOCALE_ID) private locale: string
   ) {}
 
@@ -67,16 +68,24 @@ export class EventDetailPage implements OnInit {
   }
 
   modify(courseName, eventName, startTime, endTime, allDay) {
-    this.eventService.modifyEvent(
-      this.currentEvent.id,
-      this.courseName,
-      this.setFirstLetterToUppercase(this.eventName),
-      this.startTime,
-      this.endTime,
-      this.allDay
-    );
-    this.collapseCard = true;
-    this.updateDetail();
+    this.eventService
+      .modifyEvent(
+        this.currentEvent.id,
+        this.courseName,
+        this.setFirstLetterToUppercase(this.eventName),
+        this.startTime,
+        this.endTime,
+        this.allDay
+      )
+      .then(() => {
+        this.collapseCard = true;
+        this.updateDetail();
+        this.presentToast("Event Modified Successfully :)", "success");
+      })
+      .catch((error) => {
+        // console.log("ERROR: " + error.message);
+        this.presentToast("ERROR :(", "danger");
+      });
   }
 
   async remove() {
@@ -95,8 +104,9 @@ export class EventDetailPage implements OnInit {
         {
           text: "Okay",
           handler: () => {
+            this.presentToast("Event Removed Successfully :)", "success");
             this.eventService.removeEvent(this.currentEvent.id);
-            this.router.navigateByUrl("/tabs/tab2");
+            this.router.navigateByUrl("/tabs/tab2");  
           },
         },
       ],
@@ -106,5 +116,14 @@ export class EventDetailPage implements OnInit {
 
   setFirstLetterToUppercase(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  async presentToast(msg, status) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1000,
+      color: status,
+    });
+    toast.present();
   }
 }

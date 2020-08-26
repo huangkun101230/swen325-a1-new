@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
+import { Router } from "@angular/router";
 import { formatDate } from "@angular/common";
 import { EventService } from "./../../services/user/event.service";
-import { Platform } from "@ionic/angular";
+import { Platform, ToastController } from "@ionic/angular";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -32,6 +32,7 @@ export class Tab2Page implements OnInit {
     private platform: Platform,
     private router: Router,
     private eventService: EventService, //call the services function
+    public toastController: ToastController,
     @Inject(LOCALE_ID) private locale: string
   ) {}
 
@@ -110,6 +111,13 @@ export class Tab2Page implements OnInit {
       .then(() => {
         this.router.navigateByUrl("");
         this.resetEvent();
+      })
+      .then(() => {
+        this.presentToast("Event Added Successfully :)", "success");
+      })
+      .catch((error) => {
+        // console.log("ERROR: " + error.message);
+        this.presentToast("ERROR :(", "danger");
       });
 
     //close the "new event collapseCard"
@@ -135,7 +143,16 @@ export class Tab2Page implements OnInit {
     return end;
   }
 
-  setFirstLetterToUppercase(string:string):string {
+  setFirstLetterToUppercase(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  async presentToast(msg, status) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1000,
+      color: status,
+    });
+    toast.present();
   }
 }

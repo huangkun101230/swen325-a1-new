@@ -1,8 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import { AlertController, Platform } from "@ionic/angular";
-import { AuthService } from "../../services/user/auth.service";
+import {
+  AlertController,
+  Platform,
+  ToastController,
+} from "@ionic/angular";
 import { ProfileService } from "../../services/user/profile.service";
-import { Router } from "@angular/router";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 
 @Component({
   selector: "app-profile",
@@ -11,24 +16,44 @@ import { Router } from "@angular/router";
 })
 export class ProfilePage implements OnInit {
   public userProfile: any;
+  userId = "";
 
   constructor(
     private alertCtrl: AlertController,
-    private authService: AuthService,
     private profileService: ProfileService,
-    private router: Router,
-    private platform: Platform
+    private platform: Platform,
+    public toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
-      this.profileService
-        .getUserProfile()
-        .get()
-        .then((userProfileSnapshot) => {
-          this.userProfile = userProfileSnapshot.data();
-        });
+      this.listenChanges();
     });
+  }
+
+  updateProfile() {
+    this.profileService
+      .getUserProfile()
+      .get()
+      .then((userProfileSnapshot) => {
+        this.userProfile = userProfileSnapshot.data();
+      });
+  }
+
+  listenChanges() {
+    let slef = this;
+    let db = firebase.firestore();
+    db.collection(`/userProfile/${this.userId}`).onSnapshot(
+      { includeMetadataChanges: true },
+      function (snapshot) {
+        this.eventSource = [];
+        snapshot.docChanges().forEach(function (change) {
+          if (change.type === "added" || change.type === "modified") {
+            slef.updateProfile();
+          }
+        });
+      }
+    );
   }
 
   async updateName(): Promise<void> {
@@ -53,7 +78,21 @@ export class ProfilePage implements OnInit {
         {
           text: "Save",
           handler: (data) => {
-            this.profileService.updateName(data.firstName, data.lastName);
+            this.profileService
+              .updateName(data.firstName, data.lastName)
+              .then(() => {
+                this.presentToast(
+                  "Name Changed Successfully :)",
+                  "success"
+                );
+              })
+              .catch((error) => {
+                // console.log("ERROR: " + error.message);
+                this.presentToast(
+                  "ERROR :(",
+                  "danger"
+                );
+              });
           },
         },
       ],
@@ -75,10 +114,12 @@ export class ProfilePage implements OnInit {
             this.profileService
               .updateEmail(data.newEmail, data.password)
               .then(() => {
-                console.log("Email Changed Successfully");
+                this.presentToast("Email Changed Successfully :)", "success");
+                this.updateProfile();
               })
               .catch((error) => {
-                console.log("ERROR: " + error.message);
+                // console.log("ERROR: " + error.message);
+                this.presentToast("ERROR :(", "danger");
               });
           },
         },
@@ -98,14 +139,34 @@ export class ProfilePage implements OnInit {
         {
           text: "Save",
           handler: (data) => {
-            this.profileService.updatePassword(
-              data.newPassword,
-              data.oldPassword
-            );
+            this.profileService
+              .updatePassword(data.newPassword, data.oldPassword)
+              .then(() => {
+                this.presentToast(
+                  "Password Changed Successfully :)",
+                  "success"
+                );
+              })
+              .catch((error) => {
+                // console.log("ERROR: " + error.message);
+                this.presentToast(
+                  "ERROR :(",
+                  "danger"
+                );
+              });
           },
         },
       ],
     });
     await alert.present();
+  }
+
+  async presentToast(msg, status) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1000,
+      color: status,
+    });
+    toast.present();
   }
 }

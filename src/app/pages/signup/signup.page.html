@@ -30,7 +30,7 @@
     </ion-item>
     <ion-item>
       <ion-label position="stacked">First Name</ion-label>
-      <ion-input formControlName="firstName" type="firstName" placeholder="Your first name"
+      <ion-input class="capitalize" formControlName="firstName" type="firstName" placeholder="Your first name"
         [class.invalid]="!signupForm.controls['firstName'].valid && signupForm.controls['firstName'].touched">
       </ion-input>
     </ion-item>
@@ -40,7 +40,7 @@
     </ion-item>
     <ion-item>
       <ion-label position="stacked">Last Name</ion-label>
-      <ion-input formControlName="lastName" type="lastName" placeholder="Your last name"
+      <ion-input class="capitalize" formControlName="lastName" type="lastName" placeholder="Your last name"
         [class.invalid]="!signupForm.controls['lastName'].valid && signupForm.controls['lastName'].touched">
       </ion-input>
     </ion-item>

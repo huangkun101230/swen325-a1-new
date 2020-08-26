@@ -5,19 +5,13 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
+  <ion-card-title class="title"><strong>Welcome, <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{firstName}} {{lastName}}</strong></ion-card-title>
 
-    <ion-item>
-      <ion-buttons (click)="transferToProfilePage()">Your Profile
-      </ion-buttons>
-    </ion-item>
+  <div class="buttons">
+    <ion-button class="profileBtn" expand="block" (click)="transferToProfilePage()">Your Profile
+    </ion-button>
 
-    <ion-item>
-      <ion-buttons (click)="logOut()">Log Out
-      </ion-buttons>
-    </ion-item>
-
-
-
-  </ion-list>
+    <ion-button color="danger" expand="block" (click)="logOut()">Log Out
+    </ion-button>
+  </div>
 </ion-content>

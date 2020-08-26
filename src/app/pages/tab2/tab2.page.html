@@ -13,7 +13,8 @@
     </ion-card-header>
     <ion-card-content *ngIf="!collapseCard">
       <ion-item>
-        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName" (ngModelChange)="courseName=$event.toUpperCase()"></ion-input>
+        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName"
+          (ngModelChange)="courseName=$event.toUpperCase()"></ion-input>
       </ion-item>
       <ion-item>
         <ion-input class="capitalize" type="text" placeholder="Assignment Title" [(ngModel)]="eventName"></ion-input>
@@ -38,18 +39,16 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- List of Sliding Items -->
   <ion-list>
     <ion-list-header>
-      <ion-label>Your next events</ion-label>
+      <ion-label>Your events</ion-label>
     </ion-list-header>
-    <!-- <ion-item-sliding> -->
     <ion-item tappable *ngFor="let event of eventList" routerLink="/tabs/tab2/detail/{{ event.id }}">
-        <ion-label>
-          <h2>{{event?.courseName}}</h2>
-          <h3> {{ event?.eventName }} </h3>
-          <p>Due Date: <strong>{{getDueTime(event)}}</strong></p>
-        </ion-label>
+      <ion-label>
+        <h2>{{event?.courseName}}</h2>
+        <h3> {{ event?.eventName }} </h3>
+        <p>Due Date: <strong>{{getDueTime(event)}}</strong></p>
+      </ion-label>
     </ion-item>
 
   </ion-list>

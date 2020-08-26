@@ -48,8 +48,8 @@ export class SignupPage implements OnInit {
     } else {
       const email: string = signupForm.value.email; //get email from the input filed
       const password: string = signupForm.value.password; //get pw from the input field
-      const firstName: string = signupForm.value.firstName; //get first name from the input field
-      const lastName: string = signupForm.value.lastName; //get last name from the input field
+      const firstName: string = this.setFirstLetterToUppercase(signupForm.value.firstName); //get first name from the input field
+      const lastName: string = this.setFirstLetterToUppercase(signupForm.value.lastName); //get last name from the input field
       this.authService.signupUser(email, password, firstName, lastName).then(
         //pass it to the AuthService
         () => {
@@ -70,5 +70,9 @@ export class SignupPage implements OnInit {
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
     }
+  }
+
+  setFirstLetterToUppercase(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }

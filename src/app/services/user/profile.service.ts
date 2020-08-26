@@ -60,4 +60,8 @@ export class ProfileService {
         console.error(error);
       });
   }
+
+  getUserId() {
+    return this.currentUser.uid;
+  }
 }

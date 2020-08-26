@@ -10,17 +10,20 @@
 
 <ion-content padding>
   <ion-card>
-    <ion-card-header tappable (click)="collapseCard = !collapseCard">
-      <ion-card-title>{{ currentEvent?.courseName }}</ion-card-title>
-      <ion-card-subtitle>{{ currentEvent?.eventName }}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p>Start Date: <strong>{{currentEvent?.startTime}}</strong></p>
-      <p>Due Date: <strong>{{currentEvent?.endTime}}</strong></p>
-    </ion-card-content>
+    <div  tappable (click)="collapseCard = !collapseCard">
+      <ion-card-header>
+        <ion-card-title>{{ currentEvent?.courseName }}</ion-card-title>
+        <h2><strong>{{ currentEvent?.eventName }}</strong></h2>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Start Date: <strong>{{currentEvent?.startTime}}</strong></p>
+        <p>Due Date: <strong>{{currentEvent?.endTime}}</strong></p>
+      </ion-card-content>
+    </div>
     <ion-card-content *ngIf="!collapseCard">
       <ion-item>
-        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName" (ngModelChange)="courseName=$event.toUpperCase()"></ion-input>
+        <ion-input type="text" placeholder="Course Code" [(ngModel)]="courseName"
+          (ngModelChange)="courseName=$event.toUpperCase()"></ion-input>
       </ion-item>
       <ion-item>
         <ion-input class="capitalize" type="text" placeholder="Assignment Title" [(ngModel)]="eventName"></ion-input>
