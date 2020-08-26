@@ -3,6 +3,9 @@ import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { formatDate } from "@angular/common";
 import { EventService } from "./../../services/user/event.service";
 import { Platform } from "@ionic/angular";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 
 @Component({
   selector: "app-tab2",
@@ -10,6 +13,8 @@ import { Platform } from "@ionic/angular";
   styleUrls: ["./tab2.page.scss"],
 })
 export class Tab2Page implements OnInit {
+  userId = "";
+
   courseName: string = "";
   eventName: string = "";
   startTime = new Date().toISOString();
@@ -26,42 +31,12 @@ export class Tab2Page implements OnInit {
     private router: Router,
     private eventService: EventService, //call the services function
     @Inject(LOCALE_ID) private locale: string
-  ) {
-    this.platform.ready().then(() => {
-      this.updateList();
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
-      this.updateList();
+      this.listenChanges();
     });
-  }
-
-  DIYtoIsoString(this) {
-    var tzo = -this.getTimezoneOffset(),
-      dif = tzo >= 0 ? "+" : "-",
-      pad = function (num) {
-        var norm = Math.floor(Math.abs(num));
-        return (norm < 10 ? "0" : "") + norm;
-      };
-    return (
-      this.getFullYear() +
-      "-" +
-      pad(this.getMonth() + 1) +
-      "-" +
-      pad(this.getDate()) +
-      "T" +
-      pad(this.getHours()) +
-      ":" +
-      pad(this.getMinutes()) +
-      ":" +
-      pad(this.getSeconds()) +
-      dif +
-      pad(tzo / 60) +
-      ":" +
-      pad(tzo % 60)
-    );
   }
 
   updateList() {
@@ -83,6 +58,27 @@ export class Tab2Page implements OnInit {
           return false;
         });
       });
+  }
+
+  listenChanges() {
+    this.userId = this.eventService.getUserId();
+    let slef = this;
+    let db = firebase.firestore();
+    db.collection(`/userProfile/${this.userId}/eventList`).onSnapshot(
+      { includeMetadataChanges: true },
+      function (snapshot) {
+        this.eventSource = [];
+        snapshot.docChanges().forEach(function (change) {
+          if (
+            change.type === "added" ||
+            change.type === "modified" ||
+            change.type === "removed"
+          ) {
+            slef.updateList();
+          }
+        });
+      }
+    );
   }
 
   addEvent(
@@ -111,7 +107,6 @@ export class Tab2Page implements OnInit {
       )
       .then(() => {
         this.router.navigateByUrl("");
-        this.updateList();
         this.resetEvent();
       });
 
@@ -136,9 +131,5 @@ export class Tab2Page implements OnInit {
   getDueTime(event) {
     let end = formatDate(event.endTime, "medium", this.locale);
     return end;
-  }
-
-  finish(event) {
-    this.eventService.removeEvent(event.id);
   }
 }

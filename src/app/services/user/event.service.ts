@@ -39,6 +39,23 @@ export class EventService {
     return this.eventListRef.doc(eventId).delete();
   }
 
+  modifyEvent(
+    eventId: string,
+    courseName: string,
+    eventName: string,
+    startTime: string,
+    endTime: string,
+    allDay: boolean
+  ): Promise<void> {
+    return this.eventListRef.doc(eventId).update({
+      courseName: courseName,
+      eventName: eventName,
+      startTime: startTime,
+      endTime: endTime,
+      allDay: allDay,
+    });
+  }
+
   getEventList(): firebase.firestore.CollectionReference {
     return this.eventListRef;
   }
@@ -47,7 +64,7 @@ export class EventService {
     return this.eventListRef.doc(eventId);
   }
 
-  getUserId(){
+  getUserId() {
     return this.eventListRef.parent.id;
   }
 }

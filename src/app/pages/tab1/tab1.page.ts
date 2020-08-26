@@ -30,9 +30,7 @@ export class Tab1Page implements OnInit {
     private router: Router,
     private eventService: EventService, //call the services function
     private platform: Platform
-  ) {
-    this.platform.ready().then(() => {});
-  }
+  ) {}
 
   listenChanges() {
     this.userId = this.eventService.getUserId();
@@ -43,9 +41,11 @@ export class Tab1Page implements OnInit {
       function (snapshot) {
         this.eventSource = [];
         snapshot.docChanges().forEach(function (change) {
-          if (change.type === "added") {
-            console.log("new event added!");
-
+          if (
+            change.type === "added" ||
+            change.type === "modified" ||
+            change.type === "removed"
+          ) {
             slef.updateList();
           }
         });
