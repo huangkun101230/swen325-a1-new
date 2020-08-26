@@ -33,10 +33,35 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
-    
     this.platform.ready().then(() => {
       this.updateList();
     });
+  }
+
+  DIYtoIsoString(this) {
+    var tzo = -this.getTimezoneOffset(),
+      dif = tzo >= 0 ? "+" : "-",
+      pad = function (num) {
+        var norm = Math.floor(Math.abs(num));
+        return (norm < 10 ? "0" : "") + norm;
+      };
+    return (
+      this.getFullYear() +
+      "-" +
+      pad(this.getMonth() + 1) +
+      "-" +
+      pad(this.getDate()) +
+      "T" +
+      pad(this.getHours()) +
+      ":" +
+      pad(this.getMinutes()) +
+      ":" +
+      pad(this.getSeconds()) +
+      dif +
+      pad(tzo / 60) +
+      ":" +
+      pad(tzo % 60)
+    );
   }
 
   updateList() {
@@ -77,7 +102,13 @@ export class Tab2Page implements OnInit {
       return;
     }
     this.eventService
-      .addEvent(courseName, eventName, startTime, endTime, allday)
+      .addEvent(
+        courseName,
+        eventName,
+        this.formatTime(startTime),
+        this.formatTime(endTime),
+        allday
+      )
       .then(() => {
         this.router.navigateByUrl("");
         this.updateList();
@@ -88,6 +119,12 @@ export class Tab2Page implements OnInit {
     this.collapseCard = true;
   }
 
+  formatTime(t) {
+    let time = formatDate(t, "medium", this.locale);
+    let newTime = new Date(time);
+    return newTime.toISOString();
+  }
+
   resetEvent() {
     this.courseName = "";
     this.eventName = "";
@@ -96,7 +133,7 @@ export class Tab2Page implements OnInit {
     this.allDay = false;
   }
 
-  formatTime(event) {
+  getDueTime(event) {
     let end = formatDate(event.endTime, "medium", this.locale);
     return end;
   }

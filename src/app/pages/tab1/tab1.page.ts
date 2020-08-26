@@ -1,8 +1,12 @@
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID } from "@angular/core";
 import { CalendarComponent } from "ionic2-calendar";
 import { formatDate } from "@angular/common";
-import { AlertController } from "@ionic/angular";
+import { AlertController, Platform } from "@ionic/angular";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+import { EventService } from "src/app/services/user/event.service";
 
 @Component({
   selector: "app-tab1",
@@ -15,7 +19,7 @@ export class Tab1Page implements OnInit {
   //title(date) for the page at the top
   viewTitle = "";
 
-  mySubscription: any;
+  userId = "";
 
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
@@ -23,52 +27,60 @@ export class Tab1Page implements OnInit {
     private alertCtrl: AlertController,
     @Inject(LOCALE_ID) private locale: string,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private eventService: EventService, //call the services function
+    private platform: Platform
   ) {
-    // this.mySubscription = this.route.queryParams;
-    // this.route.queryParams.subscribe((params) => {
-    //   if (this.router.getCurrentNavigation().extras.state) {
-    //     this.eventSource = this.router.getCurrentNavigation().extras.state.eventSource;
-    //   }
-    // });
-
-    // this.router.routeReuseStrategy.shouldReuseRoute = function () {
-    //   return false;
-    // };
-    // this.mySubscription = this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     // Trick the Router into believing it's last link wasn't previously loaded
-    //     this.router.navigated = false;
-    //   }
-    // });
-    // console.log(this.eventSource);
-    // this.ngOnDestroy();
-    // this.myCal.loadEvents();
+    this.platform.ready().then(() => {});
   }
 
-  // ngOnDestroy() {
-  //   if (this.mySubscription) {
-  //     this.mySubscription.unsubscribe();
-  //   }
-  // }
+  listenChanges() {
+    this.userId = this.eventService.getUserId();
+    let slef = this;
+    let db = firebase.firestore();
+    db.collection(`/userProfile/${this.userId}/eventList`).onSnapshot(
+      { includeMetadataChanges: true },
+      function (snapshot) {
+        this.eventSource = [];
+        snapshot.docChanges().forEach(function (change) {
+          if (change.type === "added") {
+            console.log("new event added!");
 
-  ngOnInit() {}
+            slef.updateList();
+          }
+        });
+      }
+    );
+  }
 
-  event = {
-    id: "",
-    title: "",
-    desc: "",
-    startTime: "",
-    endTime: "",
-    allDay: false,
-  };
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.listenChanges();
+    });
+  }
 
-  calendar = {
-    mode: "month",
-    currentDate: new Date(),
-  };
+  updateList() {
+    this.eventService
+      .getEventList() //get the list from service
+      .get()
+      .then((eventListSnapshot) => {
+        this.eventSource = [];
+        eventListSnapshot.forEach((snap) => {
+          let event: any = snap.data();
+          event.id = snap.id;
+          event.title = `${snap.data().courseName}-${snap.data().eventName}`;
+          event.startTime = this.transferDate(event.startTime);
+          event.endTime = this.transferDate(event.endTime);
+          this.eventSource.push(event);
+        });
+      });
+  }
 
-  //calendar event was clicked
+  transferDate(ISODateString) {
+    return new Date(ISODateString);
+  }
+
+  // //calendar event was clicked
   async onEventSelected(event) {
     //use Angular date pipe for conversion
     let start = formatDate(event.startTime, "medium", this.locale);
@@ -83,13 +95,10 @@ export class Tab1Page implements OnInit {
     alert.present();
   }
 
-  //time slot was clicked
-  onTimeSelected(ev) {
-    let selected = new Date(ev.selectedTime);
-    this.event.startTime = selected.toISOString();
-    selected.setHours(selected.getHours() + 1);
-    this.event.endTime = selected.toISOString();
-  }
+  calendar = {
+    mode: "month",
+    currentDate: new Date(),
+  };
 
   //selected date range and hence title changed
   onViewTitleChanged(title) {

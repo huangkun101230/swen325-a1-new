@@ -46,4 +46,8 @@ export class EventService {
   getEventDetail(eventId: string): firebase.firestore.DocumentReference {
     return this.eventListRef.doc(eventId);
   }
+
+  getUserId(){
+    return this.eventListRef.parent.id;
+  }
 }

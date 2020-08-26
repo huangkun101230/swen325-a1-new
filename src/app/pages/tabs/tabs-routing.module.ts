@@ -12,6 +12,7 @@ const routes: Routes = [
       {
         path: "tab1",
         loadChildren: "../tab1/tab1.module#Tab1PageModule",
+        canActivate: [AuthGuard],
       },
       {
         path: "tab2",
