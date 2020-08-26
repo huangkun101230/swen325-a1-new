@@ -19,7 +19,7 @@
     <ion-item>
       <ion-label position="stacked">Password</ion-label>
       <ion-input formControlName="password" type="password" placeholder="Your password" [class.invalid]="!loginForm.controls['password'].valid&&
-    loginForm.controls['password'].touched">
+    loginForm.controls['password'].touched" inputmode="password">
       </ion-input>
     </ion-item>
     <ion-item class="error-message" *ngIf="!loginForm.controls['password'].valid
