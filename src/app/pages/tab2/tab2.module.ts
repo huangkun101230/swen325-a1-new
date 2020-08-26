@@ -9,10 +9,18 @@ import { Tab2PageRoutingModule } from "./tab2-routing.module";
 import { Tab2Page } from "./tab2.page";
 
 // import { MatProgressSpinner } from "@angular/material/progress-spinner";
-// import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+// import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+// import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, Tab2PageRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    Tab2PageRoutingModule,
+    NgCircleProgressModule.forRoot({})
+  ],
   declarations: [Tab2Page],
   exports: [],
 })

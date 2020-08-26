@@ -16,6 +16,8 @@ import { firebaseConfig } from "./credentials";
 export class AppComponent {
   constructor(private platform: Platform) {
     this.initializeApp();
+    firebase.initializeApp(firebaseConfig);
+
   }
 
   initializeApp() {
@@ -27,7 +29,6 @@ export class AppComponent {
     //   console.error(error);
     // });
     this.platform.ready().then(() => {
-      firebase.initializeApp(firebaseConfig);
     });
   }
 }

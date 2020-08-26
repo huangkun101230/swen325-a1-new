@@ -28,6 +28,8 @@ export class Tab2Page implements OnInit {
 
   someAutoFormattedInput: string;
 
+  intervalId;
+
   constructor(
     private platform: Platform,
     private router: Router,
@@ -40,15 +42,59 @@ export class Tab2Page implements OnInit {
     this.platform.ready().then(() => {
       this.listenChanges();
     });
+
+    let self = this;
+    // const countDown = () => {
+    //   for (let eve in this.eventList) {
+    //     let percent = self.remainingTimeInPercentage(
+    //       this.eventList[eve].totalTime,
+    //       this.eventList[eve].endTime
+    //     );
+    //     if (percent == 0) clearInterval(this.intervalId);
+    //     if (percent >= -1 && percent <= 33) this.eventList[eve].color = '#EA1F0A'
+    //     if (percent > 33 && percent <= 65) this.eventList[eve].color = '#EAB700'
+    //     this.eventList[eve].color = '#00EA1A'
+    //     let currentPercent = parseInt(percent.toString()).toString()
+    //     this.eventList[eve].progress = currentPercent;
+    //   }
+    // };
+    this.intervalId = setInterval(this.countDown, 1000);
+  }
+
+  countDown = () => {
+    for (let eve in this.eventList) {
+      let percent = this.remainingTimeInPercentage(
+        this.eventList[eve].totalTime,
+        this.eventList[eve].endTime
+      );
+      let currentPercent = parseInt(percent.toString()).toString();
+      this.eventList[eve].progress = currentPercent;
+      if (percent == 0) clearInterval(this.intervalId);
+      if (percent <= 100 && percent >= 66)
+        this.eventList[eve].color = "#00EA1A";
+      else if (percent < 66 && percent >= 33)
+        this.eventList[eve].color = "#EAB700";
+      else {
+        this.eventList[eve].color = "#EA1F0A";
+      }
+    }
+  };
+
+  ngOnDestroy() {
+    clearInterval(this.intervalId);
   }
 
   updateList() {
+    let slef = this;
     this.eventService
       .getEventList() //get the list from service
       .get()
       .then((eventListSnapshot) => {
         this.eventList = [];
         eventListSnapshot.forEach((snap) => {
+          let t1 = slef.dateTime(snap.data().startTime);
+          let t2 = slef.dateTime(snap.data().endTime);
+          let timeDiff = t2.getTime() - t1.getTime();
           this.eventList.push({
             //push every record into our eventList array
             id: snap.id,
@@ -57,10 +103,24 @@ export class Tab2Page implements OnInit {
             startTime: snap.data().startTime,
             endTime: snap.data().endTime,
             allDay: snap.data().allDay,
+            totalTime: timeDiff,
           });
           return false;
         });
       });
+      this.intervalId = setInterval(this.countDown, 1000);
+
+  }
+
+  remainingTimeInPercentage(totalTime, endTime) {
+    let now = new Date().getTime();
+    let end = this.dateTime(endTime).getTime();
+    let diffNowAndEnd = end - now;
+    if (now < end) {
+      let percent = (diffNowAndEnd / totalTime) * 100;
+      return percent;
+    }
+    return 0;
   }
 
   listenChanges() {
@@ -122,6 +182,11 @@ export class Tab2Page implements OnInit {
 
     //close the "new event collapseCard"
     this.collapseCard = true;
+  }
+
+  dateTime(t) {
+    let time = formatDate(t, "medium", this.locale);
+    return new Date(time);
   }
 
   formatTime(t) {
