@@ -6,6 +6,7 @@ import { Platform, ToastController } from "@ionic/angular";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { LocalNotifications } from "@ionic-native/local-notifications/ngx";
 
 @Component({
   selector: "app-tab2",
@@ -35,6 +36,7 @@ export class Tab2Page implements OnInit {
     private router: Router,
     private eventService: EventService, //call the services function
     public toastController: ToastController,
+    private localNotifications: LocalNotifications,
     @Inject(LOCALE_ID) private locale: string
   ) {}
 
@@ -43,32 +45,25 @@ export class Tab2Page implements OnInit {
       this.listenChanges();
     });
 
-    let self = this;
-    // const countDown = () => {
-    //   for (let eve in this.eventList) {
-    //     let percent = self.remainingTimeInPercentage(
-    //       this.eventList[eve].totalTime,
-    //       this.eventList[eve].endTime
-    //     );
-    //     if (percent == 0) clearInterval(this.intervalId);
-    //     if (percent >= -1 && percent <= 33) this.eventList[eve].color = '#EA1F0A'
-    //     if (percent > 33 && percent <= 65) this.eventList[eve].color = '#EAB700'
-    //     this.eventList[eve].color = '#00EA1A'
-    //     let currentPercent = parseInt(percent.toString()).toString()
-    //     this.eventList[eve].progress = currentPercent;
-    //   }
-    // };
     this.intervalId = setInterval(this.countDown, 1000);
   }
 
   countDown = () => {
     for (let eve in this.eventList) {
-      let percent = this.remainingTimeInPercentage(
+      let remainingTime = this.remainingTime(
         this.eventList[eve].totalTime,
         this.eventList[eve].endTime
       );
+      let percent = (remainingTime / this.eventList[eve].totalTime) * 100;
       let currentPercent = parseInt(percent.toString()).toString();
       this.eventList[eve].progress = currentPercent;
+      if (remainingTime <= 360000 && !this.eventList[eve].triggered){
+        this.sendNotifications(
+          this.eventList[eve].courseName,
+          this.eventList[eve].eventName
+        );
+        this.eventList[eve].triggered = true
+      }
       if (percent == 0) clearInterval(this.intervalId);
       if (percent <= 100 && percent >= 66)
         this.eventList[eve].color = "#00EA1A";
@@ -79,6 +74,15 @@ export class Tab2Page implements OnInit {
       }
     }
   };
+
+  sendNotifications(courseName, eventName) {
+    // Schedule a single notification
+    this.localNotifications.schedule({
+      title: courseName + " - " + eventName,
+      text: "Hurry up, this is due in one hour!",
+      data: { page: "/tabs/tab2" },
+    });
+  }
 
   ngOnDestroy() {
     clearInterval(this.intervalId);
@@ -104,21 +108,20 @@ export class Tab2Page implements OnInit {
             endTime: snap.data().endTime,
             allDay: snap.data().allDay,
             totalTime: timeDiff,
+            triggered: false
           });
           return false;
         });
       });
-      this.intervalId = setInterval(this.countDown, 1000);
-
+    this.intervalId = setInterval(this.countDown, 1000);
   }
 
-  remainingTimeInPercentage(totalTime, endTime) {
+  remainingTime(totalTime, endTime) {
     let now = new Date().getTime();
     let end = this.dateTime(endTime).getTime();
     let diffNowAndEnd = end - now;
     if (now < end) {
-      let percent = (diffNowAndEnd / totalTime) * 100;
-      return percent;
+      return diffNowAndEnd;
     }
     return 0;
   }

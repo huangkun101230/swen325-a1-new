@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, Inject, LOCALE_ID } from "@angular/core";
 import { CalendarComponent } from "ionic2-calendar";
 import { formatDate } from "@angular/common";
 import { AlertController, Platform } from "@ionic/angular";
-import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";

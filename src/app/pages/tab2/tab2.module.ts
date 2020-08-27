@@ -8,10 +8,9 @@ import { Tab2PageRoutingModule } from "./tab2-routing.module";
 
 import { Tab2Page } from "./tab2.page";
 
-// import { MatProgressSpinner } from "@angular/material/progress-spinner";
-// import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-// import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgCircleProgressModule } from 'ng-circle-progress';
+
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @NgModule({
   imports: [
@@ -23,5 +22,6 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
   ],
   declarations: [Tab2Page],
   exports: [],
+  providers: [LocalNotifications]
 })
 export class Tab2PageModule {}
