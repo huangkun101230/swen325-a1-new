@@ -3332,8 +3332,11 @@
               var currentPercent = parseInt(percent.toString()).toString();
               _this2.eventList[eve].progress = currentPercent;
 
-              if (remainingTime <= 360000 && !_this2.eventList[eve].triggered) {
-                _this2.sendNotifications(_this2.eventList[eve].courseName, _this2.eventList[eve].eventName);
+              if (remainingTime <= 3600000 && !_this2.eventList[eve].triggered) {
+                var courseTitle = _this2.eventList[eve].courseName;
+                var eventTitle = _this2.eventList[eve].eventName;
+
+                _this2.sendNotifications(courseTitle, eventTitle);
 
                 _this2.eventList[eve].triggered = true;
               }
@@ -3361,11 +3364,7 @@
           value: function sendNotifications(courseName, eventName) {
             // Schedule a single notification
             this.localNotifications.schedule({
-              title: "".concat({
-                courseName: courseName
-              }, "-").concat({
-                eventName: eventName
-              }),
+              title: courseName + " - " + eventName,
               text: "Hurry up, this is due in one hour!",
               data: {
                 page: "/tabs/tab2"

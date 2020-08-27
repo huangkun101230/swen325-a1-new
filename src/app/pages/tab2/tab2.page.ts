@@ -52,14 +52,15 @@ export class Tab2Page implements OnInit {
     for (let eve in this.eventList) {
       let remainingTime = this.remainingTime(
         this.eventList[eve].totalTime,
-        this.eventList[eve].endTime
+        this.eventList[eve].endTime,
+        this.eventList[eve].startTime
       );
       let percent = (remainingTime / this.eventList[eve].totalTime) * 100;
       let currentPercent = parseInt(percent.toString()).toString();
       this.eventList[eve].progress = currentPercent;
       if (remainingTime <= 3600000 && !this.eventList[eve].triggered) {
-        let courseTitle = this.eventList[eve].courseName;
-        let eventTitle = this.eventList[eve].eventName;
+        let courseTitle: string = this.eventList[eve].courseName;
+        let eventTitle: string = this.eventList[eve].eventName;
         this.sendNotifications(courseTitle, eventTitle);
         this.eventList[eve].triggered = true;
       }
@@ -115,13 +116,13 @@ export class Tab2Page implements OnInit {
     this.intervalId = setInterval(this.countDown, 1000);
   }
 
-  remainingTime(totalTime, endTime) {
+  remainingTime(totalTime, endTime, startTime) {
     let now = new Date().getTime();
     let end = this.dateTime(endTime).getTime();
+    let start = this.dateTime(startTime).getTime();
     let diffNowAndEnd = end - now;
-    if (now < end) {
-      return diffNowAndEnd;
-    }
+    if (now < start) return totalTime;
+    else if (now < end && now >= start) return diffNowAndEnd;
     return 0;
   }
 

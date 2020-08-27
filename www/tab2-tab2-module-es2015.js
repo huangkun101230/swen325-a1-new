@@ -2314,8 +2314,10 @@ let Tab2Page = class Tab2Page {
                 let percent = (remainingTime / this.eventList[eve].totalTime) * 100;
                 let currentPercent = parseInt(percent.toString()).toString();
                 this.eventList[eve].progress = currentPercent;
-                if (remainingTime <= 360000 && !this.eventList[eve].triggered) {
-                    this.sendNotifications(this.eventList[eve].courseName, this.eventList[eve].eventName);
+                if (remainingTime <= 3600000 && !this.eventList[eve].triggered) {
+                    let courseTitle = this.eventList[eve].courseName;
+                    let eventTitle = this.eventList[eve].eventName;
+                    this.sendNotifications(courseTitle, eventTitle);
                     this.eventList[eve].triggered = true;
                 }
                 if (percent == 0)
@@ -2339,7 +2341,7 @@ let Tab2Page = class Tab2Page {
     sendNotifications(courseName, eventName) {
         // Schedule a single notification
         this.localNotifications.schedule({
-            title: `${{ courseName }}-${{ eventName }}`,
+            title: courseName + " - " + eventName,
             text: "Hurry up, this is due in one hour!",
             data: { page: "/tabs/tab2" },
         });
@@ -2367,7 +2369,7 @@ let Tab2Page = class Tab2Page {
                     endTime: snap.data().endTime,
                     allDay: snap.data().allDay,
                     totalTime: timeDiff,
-                    triggered: false
+                    triggered: false,
                 });
                 return false;
             });
