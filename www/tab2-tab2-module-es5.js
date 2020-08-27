@@ -3326,7 +3326,7 @@
 
           this.countDown = function () {
             for (var eve in _this2.eventList) {
-              var remainingTime = _this2.remainingTime(_this2.eventList[eve].totalTime, _this2.eventList[eve].endTime);
+              var remainingTime = _this2.remainingTime(_this2.eventList[eve].totalTime, _this2.eventList[eve].endTime, _this2.eventList[eve].startTime);
 
               var percent = remainingTime / _this2.eventList[eve].totalTime * 100;
               var currentPercent = parseInt(percent.toString()).toString();
@@ -3409,15 +3409,12 @@
           }
         }, {
           key: "remainingTime",
-          value: function remainingTime(totalTime, endTime) {
+          value: function remainingTime(totalTime, endTime, startTime) {
             var now = new Date().getTime();
             var end = this.dateTime(endTime).getTime();
+            var start = this.dateTime(startTime).getTime();
             var diffNowAndEnd = end - now;
-
-            if (now < end) {
-              return diffNowAndEnd;
-            }
-
+            if (now < start) return totalTime;else if (now < end && now >= start) return diffNowAndEnd;
             return 0;
           }
         }, {

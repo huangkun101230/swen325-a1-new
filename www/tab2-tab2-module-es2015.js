@@ -2310,7 +2310,7 @@ let Tab2Page = class Tab2Page {
         this.collapseCard = true;
         this.countDown = () => {
             for (let eve in this.eventList) {
-                let remainingTime = this.remainingTime(this.eventList[eve].totalTime, this.eventList[eve].endTime);
+                let remainingTime = this.remainingTime(this.eventList[eve].totalTime, this.eventList[eve].endTime, this.eventList[eve].startTime);
                 let percent = (remainingTime / this.eventList[eve].totalTime) * 100;
                 let currentPercent = parseInt(percent.toString()).toString();
                 this.eventList[eve].progress = currentPercent;
@@ -2376,13 +2376,15 @@ let Tab2Page = class Tab2Page {
         });
         this.intervalId = setInterval(this.countDown, 1000);
     }
-    remainingTime(totalTime, endTime) {
+    remainingTime(totalTime, endTime, startTime) {
         let now = new Date().getTime();
         let end = this.dateTime(endTime).getTime();
+        let start = this.dateTime(startTime).getTime();
         let diffNowAndEnd = end - now;
-        if (now < end) {
+        if (now < start)
+            return totalTime;
+        else if (now < end && now >= start)
             return diffNowAndEnd;
-        }
         return 0;
     }
     listenChanges() {
