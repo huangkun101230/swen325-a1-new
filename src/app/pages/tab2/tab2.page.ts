@@ -57,12 +57,11 @@ export class Tab2Page implements OnInit {
       let percent = (remainingTime / this.eventList[eve].totalTime) * 100;
       let currentPercent = parseInt(percent.toString()).toString();
       this.eventList[eve].progress = currentPercent;
-      if (remainingTime <= 360000 && !this.eventList[eve].triggered){
-        this.sendNotifications(
-          this.eventList[eve].courseName,
-          this.eventList[eve].eventName
-        );
-        this.eventList[eve].triggered = true
+      if (remainingTime <= 3600000 && !this.eventList[eve].triggered) {
+        let courseTitle = this.eventList[eve].courseName;
+        let eventTitle = this.eventList[eve].eventName;
+        this.sendNotifications(courseTitle, eventTitle);
+        this.eventList[eve].triggered = true;
       }
       if (percent == 0) clearInterval(this.intervalId);
       if (percent <= 100 && percent >= 66)
@@ -108,7 +107,7 @@ export class Tab2Page implements OnInit {
             endTime: snap.data().endTime,
             allDay: snap.data().allDay,
             totalTime: timeDiff,
-            triggered: false
+            triggered: false,
           });
           return false;
         });
