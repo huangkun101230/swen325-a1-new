@@ -64,6 +64,13 @@ ionic serve
 
 5. Explore the application at http://localhost:8100/
 
+6. if you meet some unexpected issue about the firebase, just
+<pre>
+npm install firebase
+</pre>
+
+7. Enjoy!
+
 ### External components
 <pre>
 The firebase is used for user authentication and cloud storage. https://firebase.google.com/
@@ -156,7 +163,7 @@ The NgCircleProgress is used for counting down the remainning time for each even
 * Applying this mobile app on IOS
 * Optimizing the sytle of the profile page
 * Adding a past event list
-* Allow users to set the event rememder by themselves
+* Allow users to set the event remainder by themselves
 * Allow users to change the order of the events
 * Allow user to view most of pages without authentication
 * Adding auto-complete function
