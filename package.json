@@ -31,7 +31,7 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/storage": "^2.3.0",
     "cordova-browser": "6.0.0",
-    "firebase": "^7.19.0",
+    "firebase": "^7.19.1",
     "install": "^0.13.0",
     "ionic2-calendar": "^0.6.6",
     "ng-circle-progress": "^1.5.1",

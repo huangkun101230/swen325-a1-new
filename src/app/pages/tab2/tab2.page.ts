@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
 import { Router } from "@angular/router";
 import { formatDate } from "@angular/common";
-import { EventService } from "./../../services/user/event.service";
+import { EventService } from "./../../services/event/event.service";
 import { Platform, ToastController } from "@ionic/angular";
 import * as firebase from "firebase/app";
 import "firebase/auth";

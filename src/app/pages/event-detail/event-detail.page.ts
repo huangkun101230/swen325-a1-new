@@ -1,6 +1,6 @@
 import { Component, OnInit, LOCALE_ID, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EventService } from "./../../services/user/event.service";
+import { EventService } from "./../../services/event/event.service";
 import { Platform, AlertController, ToastController } from "@ionic/angular";
 import { formatDate } from "@angular/common";
 

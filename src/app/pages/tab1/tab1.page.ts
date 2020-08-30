@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { EventService } from "src/app/services/user/event.service";
+import { EventService } from "src/app/services/event/event.service";
 
 @Component({
   selector: "app-tab1",
